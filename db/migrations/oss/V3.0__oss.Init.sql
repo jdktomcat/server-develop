@@ -1,0 +1,37 @@
+CREATE TABLE t_file_records (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  size LONG,
+  mime_type VARCHAR(100) NOT NULL,
+  height INT,
+  width INT,
+  md5 VARCHAR(100) NOT NULL,
+  contact_uuid varchar(300),
+  contact_name varchar(300),
+  modify_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE t_image_metainfo (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  meta_info JSON,
+  modify_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE t_image_metainfo2 (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  file_id BIGINT,
+  pose INTEGER,
+  scene INTEGER,
+  gender INTEGER,
+  age INTEGER,
+  glass INTEGER,
+  beard INTEGER,
+  uuid VARCHAR(300) ,
+  modify_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
+

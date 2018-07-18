@@ -1,0 +1,33 @@
+stages:
+  - test
+  - build
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.tmindtech.com
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+cache:
+  paths:
+    - .gradle/
+
+build:
+  stage: build
+  tags:
+    - java-server
+  script:
+    - ./gradlew assemble
+    - sh buildAndPushDockerImage.sh ${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}
+  artifacts:
+    paths:
+      - build/libs/*.jar
+    expire_in: 1 week
+  when: manual
+
+test:
+  stage: test
+  tags:
+    - java-server
+  allow_failure: false
+  script:
+    - ./gradlew check
+#    - cat build/reports/jacoco/test/html/index.html | perl -wnE'say /Total.*?([0-9]{1,3})%/g' | awk '{printf "Code Coverage %s%%\n", $1;}'

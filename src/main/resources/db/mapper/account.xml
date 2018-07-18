@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tmindtech.api.account.db.AccountMapper">
+    <resultMap id="accountMap" type="com.tmindtech.api.account.model.AccountResult"/>
+
+    <select id="getAccounts" resultMap="accountMap">
+        SELECT
+        a.id,
+        a.username,
+        a.nickname
+        FROM t_account AS a JOIN t_account_role AS ar ON a.id = ar.account_id
+        <where>
+            <if test="role_id != null">
+                ar.role_id = ${role_id}
+            </if>
+            <if test="name_like != null">
+                <bind name="name_like_ext" value="'%' + name_like + '%'"/>
+                AND ( a.username LIKE #{name_like_ext} OR a.nickname LIKE #{name_like_ext} )
+            </if>
+        </where>
+        GROUP BY a.id, a.username, a.nickname
+    </select>
+
+    <select id="getPermissionIds" resultType="Long">
+        SELECT DISTINCT rp.permission_id
+        FROM
+            ( SELECT r.id FROM t_account_role ar JOIN t_role r ON ar.role_id = r.id
+                  <where>
+                      <if test="account_id != null">
+                          ar.account_id = #{account_id}
+                      </if>
+                  </where>
+            ) t
+        JOIN t_role_permission rp ON t.id = rp.role_id
+    </select>
+
+
+
+</mapper>

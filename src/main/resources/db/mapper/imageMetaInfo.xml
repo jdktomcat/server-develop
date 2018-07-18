@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tmindtech.api.ossStorage.db.ImageMetaInfo2Mapper">
+
+
+    <select id="getImages" resultType="com.tmindtech.api.ossStorage.model.FileRecords">
+        SELECT
+        a.*
+        FROM
+        t_file_records AS a
+        INNER JOIN t_image_metainfo2 AS b ON a.id = b.file_id
+        <where>
+            <if test="poseQuery != null">
+                pose in
+                <foreach item="item" index="index" collection="poseQuery"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+
+            <if test="sceneQuery != null">
+                and scene in
+                <foreach item="item" index="index" collection="sceneQuery"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="genderQuery != null">
+                and gender in
+                <foreach item="item" index="index" collection="genderQuery"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="glassQuery != null">
+                and glass in
+                <foreach item="item" index="index" collection="glassQuery"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="beardQuery != null">
+                and beard in
+                <foreach item="item" index="index" collection="beardQuery"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="startTime != null">
+                and a.create_time &gt;= #{startTime}
+            </if>
+
+            <if test="endTime != null">
+                and a.create_time &lt;= #{endTime}
+            </if>
+
+            <if test="nameLike != null">
+                <bind name="name_like_ext" value="'%' + nameLike + '%'"/>
+                and a.contact_name like #{name_like_ext}
+            </if>
+
+        </where>
+        order by a.create_time DESC
+    </select>
+
+
+    <select id="getImageByIds" resultType="com.tmindtech.api.ossStorage.model.FileRecords">
+        SELECT
+            *
+        FROM
+            t_file_records
+        WHERE id in
+        <foreach item="item" index="index" collection="idList"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>
